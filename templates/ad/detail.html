@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}{{ ad.title }}{% endblock %}
+
+{% block content %}
+    <p><a href="{% url 'ad_list' %}">← Все объявления</a></p>
+
+    <div class="card">
+        <h1>{{ ad.title }}</h1>
+        <p class="price">{{ ad.price }} сом</p>
+        <p>{{ ad.description|default:"Без описания"|linebreaksbr }}</p>
+        <p class="muted">
+            Категория: {{ ad.category|default:"Без категории" }}<br>
+            Автор: {{ ad.author.username }}<br>
+            Опубликовано: {{ ad.created_at|date:"d.m.Y H:i" }}
+        </p>
+
+        {# Кнопки видит только автор — та же проверка, что во view #}
+        {% if user == ad.author %}
+            <div class="actions">
+                <a href="{% url 'ad_edit' ad.id %}" class="btn">Редактировать</a>
+                <a href="{% url 'ad_delete' ad.id %}" class="btn btn-danger">Удалить</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

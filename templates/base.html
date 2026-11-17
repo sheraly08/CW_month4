@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Объявления{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, sans-serif; background: #f4f5f7; color: #222; }
+        a { color: #2563eb; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        h1 { margin-top: 0; }
+
+        .header { background: #fff; border-bottom: 1px solid #ddd; }
+        .header-inner, .container { max-width: 900px; margin: 0 auto; padding: 0 16px; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+        .logo { font-size: 20px; font-weight: bold; color: #222; }
+        .nav { display: flex; align-items: center; gap: 14px; }
+        .nav form { margin: 0; }
+        .container { padding-top: 24px; padding-bottom: 40px; }
+
+        .btn { display: inline-block; padding: 8px 14px; border: none; border-radius: 6px;
+               background: #2563eb; color: #fff; font-size: 14px; cursor: pointer; }
+        .btn:hover { opacity: .9; text-decoration: none; }
+        .btn-light { background: #e5e7eb; color: #222; }
+        .btn-danger { background: #dc2626; }
+
+        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+        .card h3 { margin: 0 0 6px; }
+        .narrow { max-width: 420px; }
+        .muted { color: #6b7280; font-size: 14px; }
+        .price { font-size: 18px; font-weight: bold; margin: 6px 0; }
+        .actions { display: flex; gap: 8px; margin-top: 12px; }
+
+        .alert { padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; background: #e0f2fe; }
+        .alert-success { background: #dcfce7; }
+        .alert-error { background: #fee2e2; }
+
+        form p { margin: 0 0 12px; }
+        label { display: block; margin-bottom: 4px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        .errorlist { color: #dc2626; margin: 4px 0; padding-left: 18px; }
+        .helptext { color: #6b7280; font-size: 13px; }
+
+        .filters { display: flex; gap: 8px; margin-bottom: 16px; }
+        .filters input { flex: 2; }
+        .filters select { flex: 1; }
+        .pagination { display: flex; gap: 12px; align-items: center; justify-content: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="{% url 'ad_list' %}" class="logo">Объявления</a>
+
+            <nav class="nav">
+                <a href="{% url 'ad_list' %}">Главная</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'my_list' %}">Мои объявления</a>
+                    <a href="{% url 'ad_create' %}" class="btn">+ Создать</a>
+                    <span class="muted">{{ user.username }}</span>
+
+                    {# В Django 5 выход только через POST, поэтому это форма, а не ссылка #}
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{% url 'ad_list' %}">
+                        <button type="submit" class="btn btn-light">Выйти</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}">Войти</a>
+                    <a href="{% url 'signup' %}" class="btn">Регистрация</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

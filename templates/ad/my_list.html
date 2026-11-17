@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Мои объявления{% endblock %}
+
+{% block content %}
+    <h1>Мои объявления</h1>
+
+    {# Во view my_list список передан под именем "ad", поэтому перебираем ad #}
+    {% for item in ad %}
+        <div class="card">
+            <h3><a href="{% url 'detail_list' item.id %}">{{ item.title }}</a></h3>
+            <p class="price">{{ item.price }} сом</p>
+            <p class="muted">
+                {{ item.category|default:"Без категории" }} ·
+                {{ item.created_at|date:"d.m.Y H:i" }}
+            </p>
+            <div class="actions">
+                <a href="{% url 'ad_edit' item.id %}" class="btn">Редактировать</a>
+                <a href="{% url 'ad_delete' item.id %}" class="btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    {% empty %}
+        <p class="muted">У вас пока нет объявлений.</p>
+        <a href="{% url 'ad_create' %}" class="btn">Создать первое объявление</a>
+    {% endfor %}
+{% endblock %}

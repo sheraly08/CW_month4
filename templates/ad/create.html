@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Новое объявление{% endblock %}
+
+{% block content %}
+    <h1>Новое объявление</h1>
+
+    <div class="card narrow">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="actions">
+                <button type="submit" class="btn">Опубликовать</button>
+                <a href="{% url 'ad_list' %}" class="btn btn-light">Отмена</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

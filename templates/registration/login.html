@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Вход{% endblock %}
+
+{% block content %}
+    {% url 'ad_list' as home_url %}
+
+    <h1>Вход</h1>
+
+    <div class="card narrow">
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {# next — куда вернуть после входа. Если пришли сами (не через @login_required), то на главную #}
+            <input type="hidden" name="next" value="{{ next|default:home_url }}">
+            <button type="submit" class="btn">Войти</button>
+        </form>
+    </div>
+
+    <p>Нет аккаунта? <a href="{% url 'signup' %}">Зарегистрироваться</a></p>
+{% endblock %}

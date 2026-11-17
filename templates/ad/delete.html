@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Удаление: {{ ad.title }}{% endblock %}
+
+{% block content %}
+    <h1>Удалить объявление?</h1>
+
+    <div class="card narrow">
+        <p>Вы уверены, что хотите удалить «{{ ad.title }}»? Это действие нельзя отменить.</p>
+
+        {# GET показывает эту страницу, а удаляет только POST — поэтому здесь форма #}
+        <form method="post">
+            {% csrf_token %}
+            <div class="actions">
+                <button type="submit" class="btn btn-danger">Да, удалить</button>
+                <a href="{% url 'detail_list' ad.id %}" class="btn btn-light">Отмена</a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

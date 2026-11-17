@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Все объявления{% endblock %}
+
+{% block content %}
+    <h1>Объявления</h1>
+
+    {# GET-форма: значения уходят в адрес как ?q=...&category=... — их и читает ad_list #}
+    <form method="get" class="filters">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Поиск по названию или описанию">
+        <select name="category">
+            <option value="">Все категории</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}"
+                    {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn">Найти</button>
+    </form>
+
+    {% for ad in page_obj %}
+        <div class="card">
+            <h3><a href="{% url 'detail_list' ad.id %}">{{ ad.title }}</a></h3>
+            <p class="price">{{ ad.price }} сом</p>
+            {% if ad.description %}
+                <p>{{ ad.description|truncatechars:120 }}</p>
+            {% endif %}
+            <p class="muted">
+                {{ ad.category|default:"Без категории" }} ·
+                {{ ad.author.username }} ·
+                {{ ad.created_at|date:"d.m.Y H:i" }}
+            </p>
+        </div>
+    {% empty %}
+        <p class="muted">Объявлений не найдено.</p>
+    {% endfor %}
+
+    {% if page_obj.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a class="btn btn-light"
+                   href="?page={{ page_obj.previous_page_number }}{% if filter_params %}&{{ filter_params }}{% endif %}">← Назад</a>
+            {% endif %}
+
+            <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+            {% if page_obj.has_next %}
+                <a class="btn btn-light"
+                   href="?page={{ page_obj.next_page_number }}{% if filter_params %}&{{ filter_params }}{% endif %}">Вперёд →</a>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
